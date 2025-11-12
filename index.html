@@ -1,376 +1,555 @@
-<!-- <?php
-  if (!isset($rawClick)){
-    echo 'Fuck off!';
-    exit();
-} 
-?> -->
-<!DOCTYPE html><html lang="es" dir="ltr" ><head><base>
- 
-  <meta charset="UTF-8">
-  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
-  <link rel="stylesheet" href="main.css">
-  <link rel="stylesheet" href="head.css">
-  <link rel="stylesheet" href="doors.css">
-  <link rel="stylesheet" href="index.css">
-  <link rel="stylesheet" href="comments.css">
-  <title>{_sub_id_22}: "CÓMO TERMINÉ EN UNA SILLA DE RUEDAS"</title>
-  <style>
-    body, .background {
-      background-color: #260701 !important;
-    }
-	
-	.ring-loading {
-  width: 10px;
-  height: 10px;
-  padding: 15px!important;
-  border: 7px dashed #000;
-  border-radius: 100%;
-  display: none;
-  margin: 10px auto!important;
-  animation: loadingD 1.5s 0.3s cubic-bezier(0.17, 0.37, 0.43, 0.67) infinite;
-}
-@keyframes loadingD {
-  0% {
-        transform: rotate(0deg);
-    }
-  50% {
-    transform: rotate(180deg);
-    }
-  100% {
-    transform: rotate(360deg);
-    }
-}
-  </style>
-  <style>
-    .hidden {
-      display: none !important;
-    }
-    .ac_footer {
-      position: relative;
-      text-align: center;
-      overflow: hidden;
-      padding: 0px 0 50px 0;
-      color: #A12000;
-    }
-    .ac_footer a {
-      color: #A12000;
-    }
-    .ac_footer a:hover {
-      text-decoration: underline;
-    }
-    .ac_footer p {
-      text-align: center;
-    }
-    img[height="1"],
-    img[width="1"] {
-      display: none !important;
-    }
-  </style>
-  
-  
-    <link rel="icon" href="favicon.ico">
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Чат-Переводчик</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 900px;
+            height: 90vh;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .header h1 {
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .header p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .chat-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 30px;
+            background: #f8f9fa;
+        }
+
+        .message {
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .message.user {
+            align-items: flex-end;
+        }
+
+        .message.bot {
+            align-items: flex-start;
+        }
+
+        .message-bubble {
+            max-width: 70%;
+            padding: 15px 20px;
+            border-radius: 18px;
+            word-wrap: break-word;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .message.user .message-bubble {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-bottom-right-radius: 5px;
+        }
+
+        .message.bot .message-bubble {
+            background: white;
+            color: #333;
+            border-bottom-left-radius: 5px;
+            border: 1px solid #e0e0e0;
+        }
+
+        .language-label {
+            font-size: 11px;
+            margin-bottom: 5px;
+            color: #666;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .message.user .language-label {
+            color: #764ba2;
+        }
+
+        .input-area {
+            padding: 20px;
+            background: white;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .language-selector {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        .language-selector select {
+            flex: 1;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 14px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 150px;
+        }
+
+        .language-selector select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .input-wrapper {
+            display: flex;
+            gap: 10px;
+        }
+
+        .input-wrapper textarea {
+            flex: 1;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 15px;
+            font-family: inherit;
+            resize: none;
+            height: 60px;
+            transition: all 0.3s ease;
+        }
+
+        .input-wrapper textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .input-wrapper button {
+            padding: 0 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .input-wrapper button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+
+        .input-wrapper button:active {
+            transform: translateY(0);
+        }
+
+        .input-wrapper button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .loading.active {
+            display: block;
+        }
+
+        .loading-dots {
+            display: inline-flex;
+            gap: 5px;
+        }
+
+        .loading-dots span {
+            width: 10px;
+            height: 10px;
+            background: #667eea;
+            border-radius: 50%;
+            animation: bounce 1.4s infinite ease-in-out both;
+        }
+
+        .loading-dots span:nth-child(1) {
+            animation-delay: -0.32s;
+        }
+
+        .loading-dots span:nth-child(2) {
+            animation-delay: -0.16s;
+        }
+
+        @keyframes bounce {
+            0%, 80%, 100% {
+                transform: scale(0);
+            }
+            40% {
+                transform: scale(1);
+            }
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #999;
+        }
+
+        .empty-state svg {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+        .empty-state h3 {
+            font-size: 20px;
+            margin-bottom: 10px;
+            color: #666;
+        }
+
+        .empty-state p {
+            font-size: 14px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                height: 100vh;
+                border-radius: 0;
+            }
+
+            .message-bubble {
+                max-width: 85%;
+            }
+
+            .language-selector {
+                flex-direction: column;
+            }
+
+            .language-selector select {
+                width: 100%;
+            }
+        }
+
+        .swap-button {
+            padding: 12px;
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .swap-button:hover {
+            background: #f8f9fa;
+            border-color: #667eea;
+        }
+
+        .swap-button svg {
+            width: 20px;
+            height: 20px;
+        }
+    </style>
 </head>
 <body>
-<div>
-  <header class="header" data-v-78aef4cc="">
-    <img src="{_sub_id_25}" alt="">
-  </header>
-</div>
-<main class="theme-main">
-  <article>
-    <article class="show-main">
-      <div class="background th-bg-head th-color-text th-border-tile-base">
-        <div class="w_content">
-          <div class="w_row">
-            <div class="w_block ui-customdraggable o-0 c-12 collection-initial-load">
-              <div class="w__block__collection type-mosaic">
-                <div style="padding-top:25px;text-align: left" class="w_collection_title red-txt"> {_sub_id_22}: "CÓMO TERMINÉ EN UNA SILLA DE RUEDAS" </div>
-                <div class="w_collection_items items-12">
-                  <h2> La impactante historia de {_sub_id_22}, un director de cine mexicano de 69 años que quedó discapacitado por la artritis, perdió la capacidad de caminar, y cómo finalmente logró salir de la silla de ruedas tras años de sufrimiento. </h2>
-                  <picture>
-                    <img src="1.png" loading="lazy" alt="img" style="width: 100%; max-width: 700px">
-                  </picture>
-                  <p>
-                    <b>En una edición especial del programa “La Voz del Pueblo” en Televisa, escuchamos el aterrador testimonio de cómo {_sub_id_22} terminó paralizado y confinado a una silla de ruedas:</b>
-                  </p>
-                  <p style="font-style: italic"> "{_sub_id_22} pasó décadas en rodajes por todo México. Nunca se cuidaba. Durante su última filmación en Ciudad de México, se quejaba constantemente de un dolor punzante en las rodillas. Padecía gonartrosis de grado 3 desde hacía años.. Dependía de cremas y tratamientos dolorosos que no funcionaban. Incluso viajó a España buscando ayuda, pero fue un desastre. Lo dejaron en la ruina y regresó en peor estado. Apenas podía ponerse de pie. Terminó el proyecto desde una silla de ruedas. Pero gracias a Dios — todo cambió. {_sub_id_22} mejoró. Y lo que lo salvó sorprendió incluso a sus médicos." </p>
-                  <p>
-                    <b> Nuestros editores consiguieron una entrevista exclusiva con {_sub_id_22}. El querido director reveló la dura realidad de su enfermedad y la sorprendente historia de cómo sus articulaciones se recuperaron <span style="color: red">¡tras 5 años de agonía!</span> </b>
-                  </p>
-                  <p>
-                    <b>Nos alegra ver a {_sub_id_22} caminando de nuevo y haciendo lo que más ama, crear.</b>
-                  </p>
-                  <picture>
-                    <img src="2.png" alt="img" loading="lazy" style="width: 100%; max-width: 700px">
-                  </picture>
-                  <p> <b>Entrevistador:</b> {_sub_id_22}, bienvenido. Gracias por concedernos esta entrevista exclusiva. La gente habla de tu salud — algunos dicen que te vieron en silla de ruedas en Guadalajara. ¿Es cierto? </p>
-                  <p> <b>{_sub_id_22}:</b> Lamentablemente, sí. No eran rumores. Estuve en una silla de ruedas — durante meses. Y te digo algo: unos meses en ese estado pueden destruir el espíritu de cualquier hombre. Pensé que era el final. </p>
-                  <p><b>Entrevistador: ¿Qué fue exactamente lo que ocurrió?</b></p>
-                  <p> <b>{_sub_id_22}:</b> Me diagnosticaron gonartrosis avanzada — fase 3. Eso fue hace cinco años. Fue mi culpa. Ignoré las señales iniciales. Solo intentaba calmar el dolor con pomadas. No podía dejar de trabajar. Filmaba sin parar en lugares como Monterrey y Puebla. Me decía a mí mismo que descansaría después — pero ese "después" nunca llegó. Al final, el dolor se extendió a la espalda. Una mañana, al levantarme, no pude caminar. Cada articulación de mi cuerpo gritaba. </p>
-                  <p> No podía caminar. Mi equipo se alarmó mucho y tuvimos que suspender la producción. Eso significó grandes pérdidas. Mis actores se quedaron sin ingresos. La gente comenzó a abandonar el proyecto. Mi familia me llevó a una clínica privada en España. Vendimos casi todo para pagar ese viaje. Pero nada funcionó. Sin diagnóstico, sin resultados — solo deudas. Terminé con más dolor y más endeudado. Cuando entendí que nadie podía ayudarme, insistí en regresar a México. Necesitaba paz. </p>
-                  <picture>
-                    <img src="3.png" alt="img" loading="lazy" style="width: 100%; max-width: 500px">
-                  </picture>
-                  <p> Ya de regreso en casa, intenté volver al trabajo — todavía en la silla de ruedas. Pero ¿cómo puede funcionar un director estando discapacitado y dopado? Usaba pomadas y analgésicos en exceso. Y entonces ocurrió algo que lo cambió todo. Encontré una solución real. No exagero cuando digo que me sacó de la oscuridad. </p>
-                  <p> <b>Entrevistador:</b> ¿Qué fue lo que te ayudó a volver a caminar? </p>
-                  <p> <b>{_sub_id_22}:</b> Se lo debo al Dr. {_sub_id_20}, un especialista muy respetado aquí en México. Me presentó un producto llamado <a scroll="goScrollToForm"><b>Ostex</b></a>. Un bálsamo en crema simple, que se aplica dos veces al día. Al principio fui escéptico. Pero cuando ya lo has perdido todo — lo intentas todo. </p>
-                  <p> En la primera semana, el dolor en mi espalda desapareció. Fue como un milagro. Por primera vez en años, pude dormir sin medicamentos. Lloré como un niño — de puro alivio. </p>
-                  <p> La fórmula de <a scroll="goScrollToForm"><b>Ostex</b></a> no se parece a nada que haya visto antes. Contiene potentes ingredientes naturales como aceites de abeto, jengibre, canela y otros compuestos desarrollados en Suiza. El dolor comenzó a disminuir día tras día. Al final de la segunda semana, me levanté de la silla de ruedas. </p>
-                  <p> Empecé a caminar de nuevo. Primero con ayuda. Luego solo. Volví a las reuniones de producción en Guadalajara. Empecé a planear otra vez. A soñar otra vez. Seguí el consejo del Dr. Rodríguez y completé todo el tratamiento. El dolor en mis articulaciones — desapareció. Nada de inflamación, nada de punzadas en las rodillas, nada de rigidez. </p>
-                  <p>
-                    <b>Volví a vivir.</b>
-                  </p>
-                  <p> Regresé al mundo del cine. Mi nombre ya no estaba asociado al fracaso. Pude trabajar. Pude pagar mis deudas. <a scroll="goScrollToForm"><b>Ostex</b></a> no solo curó mi cuerpo. Salvó mi futuro. </p>
-                  <picture>
-                    <img src="{_sub_id_24}" alt="img" loading="lazy" style="width: 100%; max-width: 700px">
-                  </picture>
-                  <p class="red-txt big-txt" style="text-align: center; color: red !important">
-                    <b>¡Estoy de pie — mírenme ahora!</b>
-                  </p>
-                  <p> Le debo todo a <a scroll="goScrollToForm"><b>Ostex</b></a> — y al Dr. {_sub_id_20}, quien creyó en mi recuperación cuando otros ya me daban por perdido. Si hubiera seguido el camino tradicional de tratamiento, probablemente estaría en un asilo ahora mismo. O peor. </p>
-                  <p> <b>Entrevistador:</b> {_sub_id_22}, gracias por esta historia tan abierta y poderosa. ¡Te deseamos mucha fuerza y éxito continuo! </p>
-                  <p> <b>{_sub_id_22}:</b> Gracias. Espero que otros aprendan de mi error — y no esperen hasta que sea demasiado tarde. </p>
-                  <p style="padding-top: 15px; border-top: 3px dashed black">
-                    <b> Después de que se emitiera esta historia, nuestro equipo editorial visitó al Dr. {_sub_id_20} para una conversación más profunda sobre las enfermedades articulares — y para conocer más sobre el producto que le devolvió la vida a {_sub_id_22}. </b>
-                  </p>
-                  <picture>
-                    <img src="{_sub_id_18}" alt="img" loading="lazy" style="width: 100%; max-width: 500px">
-                  </picture>
-                  <p style="text-align: center">
-                    <b>Dr. {_sub_id_20}</b>
-                  </p>
-                  <p style="text-align: center"> Especialista en ortopedia, experto en rehabilitación y defensor de la salud pública. </p>
-                  <p> <b>Entrevistador:</b> Buenas tardes, doctor. Hoy queremos hablar con usted sobre las enfermedades articulares. Este problema afecta a gran parte de nuestra población en México. </p>
-                  <p> <b>Dr. Rodríguez:</b> Así es. Más del 70% de los mexicanos mayores de 45 años sufren de problemas en las articulaciones o la columna. Después de los 60, esa cifra supera el 85%. </p>
-                  <p class="big-txt">
-                    <b><span style="color: red">Y lo peor de todo es que la mayoría provoca su propio sufrimiento.</span></b>
-                  </p>
-                  <p> A la gente no le gusta ir al médico y espera demasiado tiempo. Usan pomadas genéricas o se automedican, y mientras tanto ignoran el verdadero problema. Cuando finalmente buscan ayuda, sus articulaciones ya están destruidas. </p>
-                  <p> Quiero que todos entiendan esto: los medicamentos de venta libre como el diclofenaco o el ketorolaco no curan las articulaciones — solo ocultan el dolor. Mientras tanto, la enfermedad sigue avanzando silenciosamente. </p>
-                  <p> Estas inyecciones y pastillas dañan la mucosa gástrica, afectan el hígado, y no aportan nada a la recuperación. Es una trampa que mantiene a las personas enfermas. </p>
-                  <p class="big-txt">
-                    <b>El resultado es una destrucción avanzada de las articulaciones. La gente pierde movilidad. Se vuelve dependiente. Pierde la esperanza.</b>
-                  </p>
-                  <picture>
-                    <img src="{_sub_id_19}" alt="img" loading="lazy" style="width: 100%; max-width: 450px">
-                  </picture>
-                  <p><b>Entrevistador:</b> ¿Por qué empiezan a doler las articulaciones en primer lugar?</p>
-                  <p> <b>Dr. Rodríguez:</b> La razón principal es una disminución severa del líquido sinovial. Es un lubricante natural que produce el cuerpo para proteger las articulaciones. Sin él, los huesos se rozan como papel de lija. </p>
-                  <p style="padding: 15px; background-color: #f8f4dc"> <b>El líquido sinovial</b> es esencial. Cuando el cuerpo deja de producirlo en cantidades suficientes, las articulaciones se secan y colapsan. Las rodillas, los dedos, los codos y la columna son los más afectados. </p>
-                  <picture>
-                    <img src="image13.webp" alt="img" loading="lazy" style="width: 100%; max-width: 600px">
-                  </picture>
-                  <p><b>Entrevistador:</b> ¿Qué tan peligrosas pueden llegar a ser las enfermedades articulares?</p>
-                  <p> <b>Dr. Rodríguez:</b> Extremadamente peligrosas. La articulación comienza a deformarse. Se reduce el rango de movimiento hasta que finalmente la articulación se bloquea A esto se le llama anquilosis — y es irreversible. </p>
-                  <p> Cuando las articulaciones no pueden flexionarse o estirarse completamente, se altera la postura. El peso del cuerpo se distribuye de manera incorrecta. Esto genera presión sobre otras articulaciones — lo que provoca daños secundarios y degeneración generalizada. </p>
-                  <picture>
-                    <img src="image16.webp" alt="img" loading="lazy" style="width: 100%; max-width: 700px">
-                  </picture>
-                  <p> Esto es especialmente peligroso en articulaciones grandes como las caderas, rodillas y tobillos. Las personas comienzan a experimentar <b>dolores insoportables</b>. Pierden la capacidad de caminar con normalidad. Las tareas cotidianas se vuelven imposibles. </p>
-                  <figure style="width: 100%; max-width: 600px; margin:0 auto; padding-bottom:20px;">
-                    <picture>
-                      <img src="image15.webp" alt="img" loading="lazy" style="width: 100%; ">
-                    </picture>
-                    <figcaption>
-                      <i>La artritis reumatoide y la artrosis pueden causar discapacidad en solo 3–5 años — y reducir la esperanza de vida entre 15 y 20 años.</i>
-                    </figcaption>
-                  </figure>
-                  <p> Esta condición también provoca depresión, ansiedad y aislamiento social. Por eso es fundamental iniciar el tratamiento a tiempo, antes de que el daño sea permanente. </p>
-                  <p><b>Entrevistador:</b> ¿Cuál es la forma correcta de tratar las articulaciones? ¿Cómo podemos detener el dolor y la rigidez?</p>
-                  <p> <b>Dr. Rodríguez:</b> Las pastillas no son la solución. La fisioterapia ayuda — pero no es suficiente para detener la enfermedad. </p>
-                  <p class="big-txt">
-                    <span class="red-txt"><b> Para sanar realmente tus articulaciones, debes restaurar la producción de líquido sinovial y eliminar la inflamación desde la raíz. </b></span>
-                  </p>
-                  <p> <b>Dr. Rodríguez:</b> Solo confío en una fórmula. Un producto que realmente estimula al cuerpo a producir más líquido sinovial y a regenerar el tejido articular a nivel celular. Ese producto es <a scroll="goScrollToForm"><b>Ostex</b></a>. </p>
-                  <p> Fue desarrollado en Suiza en colaboración con especialistas mexicanos. <a scroll="goScrollToForm"><b>Ostex</b></a> incluye más de 50 componentes. No voy a enumerarlos todos, solo los principales: 1) Aceite de abeto - Alivia la inflamación y la hinchazón, tiene un efecto antirreumático y mejora la movilidad articular. Contiene glucósidos que reducen el colesterol y el ácido úrico en el suero sanguíneo que alimenta las articulaciones, los músculos, los ligamentos y el esqueleto. 2) Aceite de jengibre - Es el condroprotector más poderoso conocido por la ciencia. Estimula la síntesis de ácido hialurónico y los proteoglicanos dentro del cartílago articular. Protege los huesos, músculos y cartílagos del daño y los cambios asociados a la edad. 3) Aceite de canela - Calma el área afectada, la satura con vitaminas y aminoácidos y cura las abrasiones y los moretones. </p>
-                  <figure>
-                    <picture>
-                      <img src="{_sub_id_23}" alt="img" loading="lazy" style="width:90%; max-width: 380px">
-                    </picture>
-                  </figure>
-                  <p><b>Entrevistador:</b> ¿Esto fue lo que le recomendó a {_sub_id_22}?</p>
-                  <p> <b>Dr. Rodríguez:</b> Sí. Le indiqué un protocolo de un mes: aplicar <a scroll="goScrollToForm"><b>Ostex</b></a> dos veces al día. Los resultados hablan por sí solos — {_sub_id_22} se levantó de su silla de ruedas y recuperó su vida. </p>
-                  <p> <a scroll="goScrollToForm"><b>Ostex</b></a> aumenta la producción de líquido sinovial hasta en un 70%. También activa la regeneración de los tejidos, reduce la inflamación rápidamente y mejora la movilidad articular en tiempo récord. </p>
-                  <p> A diferencia de los medicamentos sintéticos, <a scroll="goScrollToForm"><b>Ostex</b></a> no daña el estómago, el hígado ni los riñones. No enmascara el dolor — resuelve la causa del problema. Y lo hace de forma segura, sin efectos secundarios. </p>
-                  <p style="background-color: #f8f4dc; padding: 15px">
-                    <b>¡USA <a scroll="goScrollToForm"><b>Ostex</b></a> DIARIAMENTE COMO UN TRATAMIENTO COMPLETO PARA TUS ARTICULACIONES!</b>
-                  </p>
-                  <p style="text-align: center">
-                    <span class="red-txt"><b><a scroll="goScrollToForm"><b>Ostex</b></a>: la única solución realmente efectiva para la recuperación articular disponible hoy en México.</b></span>
-                  </p>
-                  <div style="background-color: #eaeaea; padding: 10px; margin-top: 10px; margin-bottom: 10px;">
-                    <p><b>Beneficios principales de <a scroll="goScrollToForm"><b>Ostex</b></a>:</b></p>
-                    <p> • Estimula la producción de líquido sinovial<br> • Elimina la inflamación articular<br> • Reduce el dolor rápidamente<br> • Repara cartílago y tejido conectivo<br> • Protege las articulaciones del desgaste y el daño por la edad </p>
-                  </div>
-                  <picture>
-                    <img src="image19.webp" alt="img" loading="lazy" style="width: 100%; max-width: 700px">
-                  </picture>
-                  <p> La gente debe entender: las enfermedades articulares no se curan con analgésicos ni con cremas esteroides. Eso solo brinda alivio temporal mientras causa daños a largo plazo. Puede llevar a úlceras, toxicidad hepática y dependencia. </p>
-                  <p> <a scroll="goScrollToForm"><b>Ostex</b></a> es diferente. Funciona en armonía con el cuerpo, apoyando de forma natural sus mecanismos de curación. Por eso es adecuado para personas de todas las edades — incluso para pacientes mayores. </p>
-                  <p> Personalmente garantizo que <a scroll="goScrollToForm"><b>Ostex</b></a> es el tratamiento articular más avanzado que ha producido la ciencia. Y fue desarrollado con la ayuda de nuestros propios investigadores mexicanos. Lo recomiendo sin dudar. </p>
-                  <p> Una de mis pacientes, una mujer de 73 años de León, recuperó la movilidad total en solo ocho semanas. Ahora camina todos los días, juega con sus nietos y ya no necesita bastón. Esto es lo que llamamos medicina real. </p>
-                  <p><b>Entrevistador:</b> ¿Dónde pueden conseguir <a scroll="goScrollToForm"><b>Ostex</b></a> los mexicanos? ¿Está disponible en farmacias?</p>
-                  <div style="margin-top: 10px; margin-bottom: 10px; padding: 15px; background-color: #d2f4ff; border: 1px solid black;">
-                    <p>
-                      <b><a scroll="goScrollToForm"><b>Ostex</b></a> fue probado en un gran estudio clínico con 1.000 pacientes con problemas articulares de distintos orígenes. Resultados después de 30 días:</b>
-                    </p>
-                    <p>1. Eliminación del dolor — <b>98%</b></p>
-                    <p>2. Mejora de movilidad — <b>96%</b></p>
-                    <p>3. Reducción de inflamación — <b>96%</b></p>
-                    <p>4. Desaparición de hinchazón — <b>97%</b></p>
-                    <p> Estos resultados convierten a <a scroll="goScrollToForm"><b>Ostex</b></a> en el remedio articular más eficaz disponible actualmente. Se recomienda para artritis, artrosis, osteocondrosis, gota, osteoporosis y otras enfermedades musculoesqueléticas. </p>
-                  </div>
-                  <p><b>Resumen de los hallazgos:</b></p>
-                  <p class="big-txt"><b>1. Articulaciones y columna</b></p>
-                  <p> <span class="red-txt"><b>El 98.3% de los pacientes reportaron alivio total del dolor articular y de espalda.</b></span> Este nivel de eficacia no tiene precedentes. </p>
-                  <p> <a scroll="goScrollToForm"><b>Ostex</b></a> no contiene transgénicos ni químicos sintéticos. Ataca la raíz del problema — no solo los síntomas. En 1.5 a 2 meses, puede restaurar completamente la función articular desde casa. </p>
-                  <p> <a scroll="goScrollToForm"><b>Ostex</b></a> es adecuado para lesiones traumáticas, condiciones degenerativas, desgaste por edad, inflamaciones crónicas y sobrecarga articular por estrés. </p>
-                  <p class="big-txt"><b>2. Vitalidad y energía</b></p>
-                  <p> <span class="red-txt"><b>Los usuarios reportaron un aumento notable en los niveles de energía diaria.</b></span> Esto se debe a que los ingredientes estimulan la producción natural de dopamina — la hormona de la motivación y la felicidad. </p>
-                  <p> Las personas duermen mejor. Se despiertan renovadas. Sienten menos fatiga. Vuelven a tener ganas de moverse. Esa es la señal de que el cuerpo está sanando — no solo resistiendo. </p>
-                  <p class="big-txt"><b>3. Sistema inmunológico</b></p>
-                  <p> <span class="red-txt"><b><a scroll="goScrollToForm"><b>Ostex</b></a> fortalece la actividad de la médula ósea — origen de las células inmunes.</b></span> Esto significa menos infecciones y mayor protección contra enfermedades. </p>
-                  <p> El sistema inmune no solo combate resfriados. También detecta y elimina células precancerosas. Un sistema inmune fuerte es la mejor defensa contra el envejecimiento y las enfermedades. </p>
-                  <p class="big-txt"><b>4. Presión arterial saludable</b></p>
-                  <p> <span class="red-txt"><b>Los ingredientes de <a scroll="goScrollToForm"><b>Ostex</b></a> penetran en el torrente sanguíneo, mejoran la circulación y reducen la presión arterial de forma segura.</b></span> Esto ocurre naturalmente — sin necesidad de pastillas. </p>
-                  <p><b>Además, <a scroll="goScrollToForm"><b>Ostex</b></a>:</b></p>
-                  <ol>
-                    <li style="list-style: none"><b>1. Disuelve placas de colesterol</b></li>
-                    <li style="list-style: none"><b>2. Aumenta la elasticidad de los vasos sanguíneos</b></li>
-                    <li style="list-style: none"><b>3. Previene espasmos vasculares causados por estrés</b></li>
-                    <li style="list-style: none"><b>4. Estabiliza la presión arterial a largo plazo</b></li>
-                  </ol>
-                  <div style="margin-top: 10px; margin-bottom: 10px; padding: 15px; background-color: #d2f4ff; border: 1px solid black;">
-                    <p style="text-align: center; margin-bottom: 0">
-                      <b><a scroll="goScrollToForm"><b>Ostex</b></a> no es solo un remedio articular — es una fórmula para la recuperación total. Reconstruye tu cuerpo desde adentro hacia afuera.</b>
-                    </p>
-                  </div>
-                  <p> No se trata de alivio temporal. Se trata de eliminar el dolor — de forma permanente — y vivir sin miedo a la discapacidad o la dependencia. </p>
-                  <p><b>Entrevistador:</b> ¿Dónde pueden conseguir <a scroll="goScrollToForm"><b>Ostex</b></a> nuestros espectadores? ¿Se vende en farmacias mexicanas?</p>
-                  <p><b>Dr. Rodríguez:</b> No. A las farmacias no les interesa que la gente se cure. Quieren clientes que regresen. No pueden obtener grandes ganancias con <a scroll="goScrollToForm"><b>Ostex</b></a> porque realmente funciona — de manera permanente. Por eso se niegan a venderlo. </p>
-                  <p> <a scroll="goScrollToForm"><b>Ostex</b></a> fue desarrollado por instituciones públicas y científicos locales. Las farmacias no están interesadas en la recuperación. Solo les importan los márgenes de ganancia. Por eso soluciones reales como esta son bloqueadas. </p>
-                  <p> La gente gasta fortunas en analgésicos inútiles, cremas, inyecciones — y sigue enferma. Mientras tanto, los que controlan las cadenas farmacéuticas se enriquecen cada día más. Decidimos romper con ese ciclo. </p>
-                  <p> <b>Por eso lanzamos el Programa Oficial de Distribución de <a scroll="goScrollToForm"><b>Ostex</b></a>.</b> Es una campaña nacional para asegurar que personas reales — y no revendedores — tengan acceso a esta fórmula. </p>
-                  <p><b>Entrevistador:</b> ¿Puede explicar cómo funciona la campaña?</p>
-                  <p> <b>Dr. Rodríguez:</b> Sí. La campaña fue lanzada con el apoyo de científicos mexicanos y entidades públicas. Cualquier persona que cumpla con los criterios puede participar — y recibir <a scroll="goScrollToForm"><b>Ostex</b></a> con un descuento de hasta el 50%. </p>
-                  <p> Pero la oferta es muy limitada. Simplemente no tenemos suficiente producto para todos. Por eso existe un proceso de selección. Solo quienes realmente necesitan <a scroll="goScrollToForm"><b>Ostex</b></a> pueden obtenerlo — y solo a través de la página oficial. </p>
-                  <p><b>Entrevistador:</b> Gracias, doctor Rodríguez. Nos aseguraremos de que nuestros lectores reciban toda la información.</p>
-                  <div style="margin-top: 10px; margin-bottom: 10px; padding: 15px; background-color: #f8f4dc; border: 1px solid black;">
-                    <p class="big-txt">
-                      <b>Cómo obtener <a scroll="goScrollToForm"><b>Ostex</b></a> con descuento a través de la campaña:</b>
-                    </p>
-                    <p><b>1. Debes ser residente legal de México.</b></p>
-                    <p>Esta campaña está disponible solo para ciudadanos mexicanos o residentes permanentes.</p>
-                    <p><b>2. Debes solicitarlo solo para uso personal.</b></p>
-                    <p>Esta norma existe para evitar que revendedores abusen del descuento y aumenten los precios.</p>
-                    <p><b>3. Debes participar en el sorteo oficial de distribución.</b></p>
-                    <p> Los paquetes promocionales son extremadamente limitados. Para aplicar, selecciona una de las puertas a continuación y verifica si calificas para recibir <a scroll="goScrollToForm"><b>Ostex</b></a> con hasta un 50% de descuento. </p>
-                  </div>
-                  <p> Miles de mexicanos ya han recuperado su salud gracias a <a scroll="goScrollToForm"><b>Ostex</b></a>. No esperes a estar en una silla de ruedas. Toma acción mientras aún puedes. </p>
-                  <div style="
-                        margin-top: 10px;
-                        margin-bottom: 10px;
-                        padding: 15px;
-                        background-color: #dcffda;
-                        border: 2px solid red;
-                      ">
-                    <p> <b>¡ATENCIÓN!</b> Las investigaciones más recientes han confirmado que el mejor momento para comenzar a usar <a scroll="goScrollToForm"><b>Ostex</b></a> es durante septiembre y octubre! Los cambios de temperatura estimulan un metabolismo más rápido y una recuperación articular más eficaz. </p>
-                  </div>
-                  <center>
-                  <img style="display: block; margin: 20px auto; max-width: 300px; width: 100%; " src="product.png"
-                    loading="lazy" decoding="async">
-                </center>
-                <p style="text-align: center; margin-top: 10px; "> Consíguelo con un 50% de descuento <p>
-
-
-                <!-- API [BEGIN] -->
-                <div id="alx-form"></div>
-                <form action="integrations/api.php" method="POST" class="order-form form_order" style="display: flex; flex-direction: column; align-items: center; gap: 10px; margin-bottom: 20px; border: 1px solid black; padding: 15px;"> <input type="hidden"
-                    name="subid" value="{subid}"> <input type="hidden" name="utm_campaign" value="{utm_campaign}">
-                  <!-- sub --> <input type="hidden" name="utm_content" value="{sub2}"> <input type="hidden"
-                    name="subhype" value="{subhype}"> <input type="hidden" name="pixel" value="{pixel}"> <input
-                    type="hidden" name="language" value="{language}"> <input type="hidden" name="offer_id"
-                    value="6f711ef0-dbd6-4895-8b32-5f2aca3b290e"> <!-- offer_id --> <input type="hidden" name="source" value="{source}"> <!-- API [END] -->
-                    <div class="price" style="display: flex; gap: 20px;">
-                      <span class="order-form__price" style="text-decoration: line-through;"> <span class="x_currency_old">258
-                        </span> </span> <span class="order-form__price"> <span class="x_currency"> 129 </span>* </span>
-                    </div> <label class="order-form__label" for="client">Nombre</label> <input
-                    class="order-form__text" type="text" id="client" name="name" required placeholder="Nombre"
-                    minlength="1" maxlength="32" value="" style="padding: 10px;"> <label class="order-form__label" for="phone">Número de teléfono
-                  </label> <input style="padding: 10px;" class="order-form__text" type="tel" id="phone" name="phone" required
-                    placeholder="Número de teléfono" minlength="6" maxlength="18" dir="ltr"
-                    style="direction: ltr !important; text-align: left !important; " value=""> <button
-                    style="font-size: 18px; margin-bottom: 0px !important; background-color: rgb(61, 255, 61); border: 1px solid black;" type="submit"
-                    class="order-form__button mm_button" > Ordene con 50% de descuento</button> </form>
-               
-             
-                  <style>
-                    @media screen and (max-width: 430px) {
-                      .submit-roulette {
-                        max-width: 240px;
-                      }
-                    }
-                  </style>
-                  <div class="vk-container" style="float: none">
-  <div class="vk-header">
-    <div class="vk-header-text">
-      <span class="comment-count">Comentarios:</span>
-    </div>
-  </div>
-  <br>
-  <div id="comments" class="vk-container">
-    
-  </div>
-  <br>
-  <br>
-  <div class="text-center">
-    <a scroll="goScrollToForm" style="
-          text-transform: uppercase;
-          background: red;
-          text-decoration: none;
-          display: inline-block;
-          padding: 10px;
-          font-size: 20px;
-          color: white !important;
-          margin-top: 25px;
-		  margin-bottom: 20px;
-        ">OBTÉN Ostex CON UNA OFERTA ESPECIAL </a>
-  </div>
-</div>
-                </div>
-              </div>
-            </div>
-          </div>
+    <div class="container">
+        <div class="header">
+            <h1>🌍 Чат-Переводчик</h1>
+            <p>Мгновенный перевод текстов между языками</p>
         </div>
-      </div></article>
-    </article>
-  </main>
-  <br>
-  <br>
-  <br>
 
-  
-  
-  <div class="ac_footer"><span>© <span class="ryear">2025</span> Copyright.
-  Todos los derechos reservados.</span> <br></div>
+        <div class="chat-container" id="chatContainer">
+            <div class="empty-state">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                    <path d="M8 10h.01M12 10h.01M16 10h.01"></path>
+                </svg>
+                <h3>Начните переводить</h3>
+                <p>Введите текст ниже и выберите языки для перевода</p>
+            </div>
+        </div>
 
-    	
+        <div class="loading" id="loading">
+            <div class="loading-dots">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
 
-	<style>
-		[scroll="goScrollToForm"] {
-			cursor: pointer;
-		}
-	</style>
+        <div class="input-area">
+            <div class="language-selector">
+                <select id="fromLang">
+                    <option value="ru">🇷🇺 Русский</option>
+                    <option value="en">🇬🇧 English</option>
+                    <option value="es">🇪🇸 Español</option>
+                    <option value="fr">🇫🇷 Français</option>
+                    <option value="de">🇩🇪 Deutsch</option>
+                    <option value="it">🇮🇹 Italiano</option>
+                    <option value="pt">🇵🇹 Português</option>
+                    <option value="zh">🇨🇳 中文</option>
+                    <option value="ja">🇯🇵 日本語</option>
+                    <option value="ko">🇰🇷 한국어</option>
+                    <option value="ar">🇸🇦 العربية</option>
+                    <option value="tr">🇹🇷 Türkçe</option>
+                    <option value="pl">🇵🇱 Polski</option>
+                    <option value="uk">🇺🇦 Українська</option>
+                </select>
+                
+                <button class="swap-button" id="swapBtn" title="Поменять языки">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M7 16V4M7 4L3 8M7 4L11 8"></path>
+                        <path d="M17 8V20M17 20L21 16M17 20L13 16"></path>
+                    </svg>
+                </button>
 
-     
+                <select id="toLang">
+                    <option value="en">🇬🇧 English</option>
+                    <option value="ru">🇷🇺 Русский</option>
+                    <option value="es">🇪🇸 Español</option>
+                    <option value="fr">🇫🇷 Français</option>
+                    <option value="de">🇩🇪 Deutsch</option>
+                    <option value="it">🇮🇹 Italiano</option>
+                    <option value="pt">🇵🇹 Português</option>
+                    <option value="zh">🇨🇳 中文</option>
+                    <option value="ja">🇯🇵 日本語</option>
+                    <option value="ko">🇰🇷 한국어</option>
+                    <option value="ar">🇸🇦 العربية</option>
+                    <option value="tr">🇹🇷 Türkçe</option>
+                    <option value="pl">🇵🇱 Polski</option>
+                    <option value="uk">🇺🇦 Українська</option>
+                </select>
+            </div>
 
-  
-    <style>
-    form input:focus { outline: 0; box-shadow: 0 0 0 3px #b2af42a6; } .error-box-mask{color:#fff;background-color:#de5042;border-radius:5px;text-align:center;width:95%;font-size:13px;line-height:20px;z-index:100;margin:3px 0 auto}@media (min-width:769px){.error-box-mask{font-size:13px;line-height:16px}}
-    </style>
+            <div class="input-wrapper">
+                <textarea 
+                    id="textInput" 
+                    placeholder="Введите текст для перевода..."
+                    maxlength="5000"
+                ></textarea>
+                <button id="translateBtn">
+                    Перевести
+                </button>
+            </div>
+        </div>
+    </div>
 
+    <script>
+        const chatContainer = document.getElementById('chatContainer');
+        const textInput = document.getElementById('textInput');
+        const translateBtn = document.getElementById('translateBtn');
+        const fromLang = document.getElementById('fromLang');
+        const toLang = document.getElementById('toLang');
+        const swapBtn = document.getElementById('swapBtn');
+        const loading = document.getElementById('loading');
 
+        const languageNames = {
+            'ru': 'Русский',
+            'en': 'English',
+            'es': 'Español',
+            'fr': 'Français',
+            'de': 'Deutsch',
+            'it': 'Italiano',
+            'pt': 'Português',
+            'zh': '中文',
+            'ja': '日本語',
+            'ko': '한국어',
+            'ar': 'العربية',
+            'tr': 'Türkçe',
+            'pl': 'Polski',
+            'uk': 'Українська'
+        };
 
+        // Словарь для базовых переводов (для демонстрации)
+        const translations = {
+            'hello': { 'ru': 'привет', 'en': 'hello', 'es': 'hola', 'fr': 'bonjour', 'de': 'hallo', 'it': 'ciao', 'pt': 'olá', 'zh': '你好', 'ja': 'こんにちは', 'ko': '안녕하세요' },
+            'привет': { 'en': 'hello', 'es': 'hola', 'fr': 'bonjour', 'de': 'hallo', 'ru': 'привет' },
+            'goodbye': { 'ru': 'до свидания', 'en': 'goodbye', 'es': 'adiós', 'fr': 'au revoir', 'de': 'auf wiedersehen' },
+            'thank you': { 'ru': 'спасибо', 'en': 'thank you', 'es': 'gracias', 'fr': 'merci', 'de': 'danke' },
+            'спасибо': { 'en': 'thank you', 'es': 'gracias', 'fr': 'merci', 'de': 'danke' },
+            'yes': { 'ru': 'да', 'en': 'yes', 'es': 'sí', 'fr': 'oui', 'de': 'ja' },
+            'no': { 'ru': 'нет', 'en': 'no', 'es': 'no', 'fr': 'non', 'de': 'nein' },
+            'please': { 'ru': 'пожалуйста', 'en': 'please', 'es': 'por favor', 'fr': 's\'il vous plaît', 'de': 'bitte' },
+        };
 
-</body></html>
+        function removeEmptyState() {
+            const emptyState = chatContainer.querySelector('.empty-state');
+            if (emptyState) {
+                emptyState.remove();
+            }
+        }
+
+        function addMessage(text, type, lang) {
+            removeEmptyState();
+            
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${type}`;
+            
+            const langLabel = document.createElement('div');
+            langLabel.className = 'language-label';
+            langLabel.textContent = languageNames[lang] || lang;
+            
+            const bubble = document.createElement('div');
+            bubble.className = 'message-bubble';
+            bubble.textContent = text;
+            
+            messageDiv.appendChild(langLabel);
+            messageDiv.appendChild(bubble);
+            chatContainer.appendChild(messageDiv);
+            
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+
+        async function translateText(text, from, to) {
+            // Симуляция API перевода
+            // В реальном приложении здесь будет вызов API (Google Translate, DeepL и т.д.)
+            
+            const lowerText = text.toLowerCase().trim();
+            
+            // Проверяем простые переводы
+            if (translations[lowerText] && translations[lowerText][to]) {
+                return translations[lowerText][to];
+            }
+            
+            // Попытка использовать LibreTranslate API (бесплатный API для перевода)
+            try {
+                const response = await fetch('https://libretranslate.com/translate', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        q: text,
+                        source: from,
+                        target: to,
+                        format: 'text'
+                    })
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    return data.translatedText;
+                }
+            } catch (error) {
+                console.log('API перевода недоступен, используем демо-режим');
+            }
+            
+            // Если API недоступен, возвращаем демо-сообщение
+            return `[Перевод: "${text}" с ${languageNames[from]} на ${languageNames[to]}]\n\nПримечание: Для полноценной работы подключите API перевода (Google Translate API, DeepL API или LibreTranslate)`;
+        }
+
+        translateBtn.addEventListener('click', async () => {
+            const text = textInput.value.trim();
+            if (!text) return;
+            
+            const from = fromLang.value;
+            const to = toLang.value;
+            
+            if (from === to) {
+                alert('Выберите разные языки для перевода');
+                return;
+            }
+            
+            // Добавляем исходное сообщение
+            addMessage(text, 'user', from);
+            
+            // Очищаем поле ввода
+            textInput.value = '';
+            
+            // Показываем загрузку
+            loading.classList.add('active');
+            translateBtn.disabled = true;
+            
+            try {
+                // Симулируем задержку
+                await new Promise(resolve => setTimeout(resolve, 800));
+                
+                // Выполняем перевод
+                const translatedText = await translateText(text, from, to);
+                
+                // Добавляем переведенное сообщение
+                addMessage(translatedText, 'bot', to);
+            } catch (error) {
+                addMessage('Ошибка при переводе. Попробуйте снова.', 'bot', to);
+            } finally {
+                loading.classList.remove('active');
+                translateBtn.disabled = false;
+                textInput.focus();
+            }
+        });
+
+        // Отправка по Enter (Shift+Enter для новой строки)
+        textInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                translateBtn.click();
+            }
+        });
+
+        // Кнопка смены языков
+        swapBtn.addEventListener('click', () => {
+            const temp = fromLang.value;
+            fromLang.value = toLang.value;
+            toLang.value = temp;
+        });
+
+        // Фокус на поле ввода при загрузке
+        textInput.focus();
+    </script>
+</body>
+</html>
